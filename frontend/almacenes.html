@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Express - Almacenes</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Gourmet Express</h2>
+        <nav>
+            <a href="index.html">📊 Dashboard</a>
+            <a href="proveedores.html">🚚 Proveedores</a>
+            <a href="productos.html">📦 Productos</a>
+            <a href="almacenes.html" class="active">🏢 Almacenes</a>
+            <a href="lotes.html">🔢 Lotes</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header style="margin-bottom: 2rem;">
+            <h1>Sedes y Almacenes</h1>
+            <p style="color: #8a8a98;">Puntos de distribución física de la cadena gastronómica</p>
+        </header>
+
+        <section class="card" style="background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #2c2c35; color: #8a8a98;">
+                        <th style="padding: 0.8rem;">Número Único</th>
+                        <th style="padding: 0.8rem;">Nombre de la Sede</th>
+                        <th style="padding: 0.8rem;">Dirección Física</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-almacenes-body">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+    <script src="js/api.js"></script>
+<script src="js/almacenes.js"></script>
+</body>
+</html>

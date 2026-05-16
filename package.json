@@ -1,0 +1,21 @@
+{
+  "name": "gourmet-express-api",
+  "version": "1.0.0",
+  "description": "API REST para el sistema de gestión de cadena de suministro - Gourmet Express",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validation": "^7.0.1",
+    "morgan": "^1.10.1",
+    "mysql2": "^3.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

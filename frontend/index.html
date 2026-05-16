@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Express - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Gourmet Express</h2>
+        <nav>
+            <a href="index.html" class="active">📊 Dashboard</a>
+            <a href="proveedores.html">🚚 Proveedores</a>
+            <a href="productos.html">📦 Productos</a>
+            <a href="almacenes.html">🏢 Almacenes</a>
+            <a href="lotes.html">🔢 Lotes</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header style="margin-bottom: 2rem;">
+            <h1>Panel de Control</h1>
+            <p style="color: var(--text-secondary);">Estado general de la cadena de suministro</p>
+        </header>
+
+        <section id="alertas-seccion" style="display: none;">
+            <h2 style="color: var(--danger-color); margin-bottom: 1rem;">⚠️ Alertas de Vencimiento Crítico (Próximos 30 días)</h2>
+            <div id="contenedor-alertas"></div>
+        </section>
+
+        <section class="metrics-grid">
+            <div class="card">
+                <h3>Total Proveedores</h3>
+                <div class="value" id="metric-proveedores">-</div>
+            </div>
+            <div class="card">
+                <h3>Productos en Catálogo</h3>
+                <div class="value" id="metric-productos">-</div>
+            </div>
+            <div class="card">
+                <h3>Almacenes Registrados</h3>
+                <div class="value" id="metric-almacenes">-</div>
+            </div>
+            <div class="card">
+                <h3>Lotes Activos</h3>
+                <div class="value" id="metric-lotes">-</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Express - Lotes y Vencimientos</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Gourmet Express</h2>
+        <nav>
+            <a href="index.html">📊 Dashboard</a>
+            <a href="proveedores.html">🚚 Proveedores</a>
+            <a href="productos.html">📦 Productos</a>
+            <a href="almacenes.html">🏢 Almacenes</a>
+            <a href="lotes.html" class="active">🔢 Lotes</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header style="margin-bottom: 2rem;">
+            <h1>Control de Lotes y Vencimientos</h1>
+            <p style="color: #8a8a98;">Monitoreo de trazabilidad, stock y fechas críticas de caducidad</p>
+        </header>
+
+        <section class="card" style="margin-bottom: 2rem; background: #2a1b1b; border: 1px solid #ff4d4d; padding: 1.2rem; border-radius: 8px;">
+            <h3 style="color: #ff4d4d; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                ⚠️ Alerta de Calidad: Próximos a Vencer (Menos de 30 días)
+            </h3>
+            <div id="contenedor-alertas">
+                </div>
+        </section>
+
+        <section class="card" style="margin-bottom: 2.5rem; background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">Registrar Entrada de Nuevo Lote</h3>
+            <form id="form-lote" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Producto *</label>
+                    <select id="select-producto" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                        </select>
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Almacén / Sede *</label>
+                    <select id="select-almacen" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                        </select>
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Cantidad Inicial *</label>
+                    <input type="number" id="cantidad" required min="1" style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Fecha de Vencimiento *</label>
+                    <input type="date" id="fecha-vencimiento" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div style="grid-column: span 4; margin-top: 0.5rem;">
+                    <button type="submit" style="background: #ff9f43; color: black; font-weight: bold; padding: 0.7rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">
+                        Ingresar Lote al Sistema
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card" style="background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: white; margin-bottom: 1rem;">📋 Inventario General por Lotes</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #2c2c35; color: #8a8a98;">
+                        <th style="padding: 0.8rem;">Código Lote</th>
+                        <th style="padding: 0.8rem;">Producto</th>
+                        <th style="padding: 0.8rem;">Ubicación</th>
+                        <th style="padding: 0.8rem;">Stock Actual</th>
+                        <th style="padding: 0.8rem;">Vencimiento</th>
+                        <th style="padding: 0.8rem;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-lotes-body">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/lotes.js"></script>
+</body>
+</html>
