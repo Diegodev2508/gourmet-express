@@ -24,6 +24,15 @@ app.use('/api/productos',   productoRoutes);
 app.use('/api/almacenes',   almacenRoutes);
 app.use('/api/lotes',       loteRoutes);
 
+// Servir archivos estáticos del frontend
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Ruta raíz → sirve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
 // Health check
 app.get('/api/health', (_, res) =>
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
@@ -39,17 +48,15 @@ app.use(errorHandler);
 
 // ── Iniciar servidor ─────────────────────────────────────────
 async function start() {
-  await testConnection();
-  app.listen(PORT, () => {
-    console.log(`🚀  Gourmet Express API corriendo en http://localhost:${PORT}`);
-    console.log(`📋  Endpoints disponibles:`);
-    console.log(`    GET  /api/health`);
-    console.log(`    CRUD /api/proveedores`);
-    console.log(`    CRUD /api/productos`);
-    console.log(`    CRUD /api/almacenes`);
-    console.log(`    CRUD /api/lotes`);
-    console.log(`    GET  /api/lotes/proximos-vencer?dias=30`);
-  });
+  try {
+    await testConnection(); // Si falla, entra al catch
+    app.listen(PORT, () => {
+      console.log(`🚀 Gourmet Express API corriendo en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ No se pudo conectar a la BD. Servidor no iniciado.', error);
+    process.exit(1); // Para el proceso limpiamente
+  }
 }
 
 start();

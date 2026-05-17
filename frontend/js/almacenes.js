@@ -1,28 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tablaBody = document.getElementById('tabla-almacenes-body');
+  const tablaBody = document.getElementById('tabla-almacenes-body');
 
-    // Datos simulados fijos que representan las sedes físicas de la cadena
-    const almacenesPrueba = [
-        { id_almacen: 1, nombre: "Sede Central - El Poblado", direccion: "Carrera 43A #9-12" },
-        { id_almacen: 2, nombre: "Planta de Producción - Laureles", direccion: "Avenida Nutibara #74-25" },
-        { id_almacen: 3, nombre: "Centro de Distribución - Envigado", direccion: "Calle 38 Sur #41-10" }
-    ];
+  async function cargarAlmacenes() {
+    try {
+      const respuesta = await fetch('http://localhost:3000/api/almacenes');
 
-    function cargarAlmacenes() {
-        tablaBody.innerHTML = '';
+      if (!respuesta.ok) {
+        throw new Error('Error al conectar con el servidor backend');
+      }
 
-        almacenesPrueba.forEach(a => {
-            const fila = document.createElement('tr');
-            fila.style.borderBottom = '1px solid #2c2c35';
-            fila.innerHTML = `
-                <td style="padding: 0.8rem; color: #ff9f43; font-weight: bold;">00${a.id_almacen}</td>
-                <td style="padding: 0.8rem; color: white; font-weight: bold;">${a.nombre}</td>
-                <td style="padding: 0.8rem; color: #8a8a98;">${a.direccion}</td>
-            `;
-            tablaBody.appendChild(fila);
-        });
+      const json = await respuesta.json();
+      // La API devuelve { total, data: [...] }
+      const almacenesReal = json.data || json;
+
+      tablaBody.innerHTML = '';
+
+      if (almacenesReal.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="3" style="color: #8a8a98; padding: 1rem; text-align: center;">No hay almacenes registrados</td></tr>';
+        return;
+      }
+
+      almacenesReal.forEach(a => {
+        const fila = document.createElement('tr');
+        fila.style.borderBottom = '1px solid #2c2c35';
+
+        fila.innerHTML = `
+          <td style="padding: 0.8rem; color: #ff9f43; font-weight: bold;">00${a.id_almacen}</td>
+          <td style="padding: 0.8rem; color: white; font-weight: bold;">${a.nombre}</td>
+          <td style="padding: 0.8rem; color: #8a8a98;">${a.ubicacion || 'Sin dirección'}</td>
+        `;
+
+        tablaBody.appendChild(fila);
+      });
+
+    } catch (error) {
+      console.error('❌ Error en el fetch de almacenes:', error);
+      tablaBody.innerHTML = `<tr><td colspan="3" style="color: #ff3333; padding: 1rem; text-align: center;">Error al cargar datos reales desde MySQL.</td></tr>`;
     }
+  }
 
-    // Carga inicial
-    cargarAlmacenes();
+  cargarAlmacenes();
 });

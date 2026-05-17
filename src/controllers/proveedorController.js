@@ -1,20 +1,13 @@
 // src/controllers/proveedorController.js
 const { pool } = require('../config/db');
 
-// GET /api/proveedores — Listar todos con sus teléfonos
+// GET /api/proveedores
 async function getAll(req, res, next) {
   try {
     const [rows] = await pool.query(`
-      SELECT
-        p.id_proveedor,
-        p.nombre_proveedor,
-        p.dir_ciudad,
-        p.dir_calle,
-        GROUP_CONCAT(t.telefono ORDER BY t.id_telefono SEPARATOR ', ') AS telefonos
-      FROM proveedor p
-      LEFT JOIN proveedor_telefono t USING (id_proveedor)
-      GROUP BY p.id_proveedor
-      ORDER BY p.nombre_proveedor
+      SELECT id_proveedor, nombre, contacto, telefono, ciudad, direccion, created_at
+      FROM proveedores
+      ORDER BY nombre
     `);
     res.json({ total: rows.length, data: rows });
   } catch (err) { next(err); }
@@ -23,95 +16,51 @@ async function getAll(req, res, next) {
 // GET /api/proveedores/:id
 async function getById(req, res, next) {
   try {
-    const { id } = req.params;
     const [[proveedor]] = await pool.query(
-      'SELECT * FROM proveedor WHERE id_proveedor = ?', [id]
+      'SELECT * FROM proveedores WHERE id_proveedor = ?', [req.params.id]
     );
     if (!proveedor) return res.status(404).json({ error: 'Proveedor no encontrado' });
-
-    const [telefonos] = await pool.query(
-      'SELECT id_telefono, telefono FROM proveedor_telefono WHERE id_proveedor = ?', [id]
-    );
-    res.json({ ...proveedor, telefonos });
+    res.json(proveedor);
   } catch (err) { next(err); }
 }
 
-// POST /api/proveedores — Crear proveedor + teléfonos
+// POST /api/proveedores
 async function create(req, res, next) {
-  const conn = await pool.getConnection();
   try {
-    const { nombre_proveedor, dir_ciudad, dir_calle, telefonos = [] } = req.body;
-
-    if (!nombre_proveedor || !dir_ciudad || !dir_calle) {
-      return res.status(400).json({ error: 'nombre_proveedor, dir_ciudad y dir_calle son obligatorios' });
+    const { nombre, contacto, telefono, ciudad, direccion } = req.body;
+    if (!nombre || !telefono) {
+      return res.status(400).json({ error: 'nombre y telefono son obligatorios' });
     }
-
-    await conn.beginTransaction();
-
-    const [result] = await conn.query(
-      'INSERT INTO proveedor (nombre_proveedor, dir_ciudad, dir_calle) VALUES (?, ?, ?)',
-      [nombre_proveedor, dir_ciudad, dir_calle]
+    const [result] = await pool.query(
+      'INSERT INTO proveedores (nombre, contacto, telefono, ciudad, direccion) VALUES (?, ?, ?, ?, ?)',
+      [nombre, contacto || nombre, telefono, ciudad || null, direccion || null]
     );
-    const id_proveedor = result.insertId;
-
-    // Insertar teléfonos multivalorados
-    if (telefonos.length > 0) {
-      const values = telefonos.map(t => [id_proveedor, t]);
-      await conn.query('INSERT INTO proveedor_telefono (id_proveedor, telefono) VALUES ?', [values]);
-    }
-
-    await conn.commit();
-    res.status(201).json({ message: 'Proveedor creado', id_proveedor });
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-  } finally {
-    conn.release();
-  }
+    res.status(201).json({ message: 'Proveedor creado', id_proveedor: result.insertId });
+  } catch (err) { next(err); }
 }
 
-// PUT /api/proveedores/:id — Actualizar proveedor y reemplazar teléfonos
+// PUT /api/proveedores/:id
 async function update(req, res, next) {
-  const conn = await pool.getConnection();
   try {
-    const { id } = req.params;
-    const { nombre_proveedor, dir_ciudad, dir_calle, telefonos } = req.body;
-
-    await conn.beginTransaction();
-
-    await conn.query(
-      `UPDATE proveedor SET
-        nombre_proveedor = COALESCE(?, nombre_proveedor),
-        dir_ciudad       = COALESCE(?, dir_ciudad),
-        dir_calle        = COALESCE(?, dir_calle)
+    const { nombre, contacto, telefono, ciudad, direccion } = req.body;
+    await pool.query(
+      `UPDATE proveedores SET
+        nombre    = COALESCE(?, nombre),
+        contacto  = COALESCE(?, contacto),
+        telefono  = COALESCE(?, telefono),
+        ciudad    = COALESCE(?, ciudad),
+        direccion = COALESCE(?, direccion)
        WHERE id_proveedor = ?`,
-      [nombre_proveedor, dir_ciudad, dir_calle, id]
+      [nombre, contacto, telefono, ciudad, direccion, req.params.id]
     );
-
-    // Reemplazar teléfonos si se enviaron
-    if (Array.isArray(telefonos)) {
-      await conn.query('DELETE FROM proveedor_telefono WHERE id_proveedor = ?', [id]);
-      if (telefonos.length > 0) {
-        const values = telefonos.map(t => [id, t]);
-        await conn.query('INSERT INTO proveedor_telefono (id_proveedor, telefono) VALUES ?', [values]);
-      }
-    }
-
-    await conn.commit();
     res.json({ message: 'Proveedor actualizado' });
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-  } finally {
-    conn.release();
-  }
+  } catch (err) { next(err); }
 }
 
 // DELETE /api/proveedores/:id
 async function remove(req, res, next) {
   try {
-    const { id } = req.params;
-    await pool.query('DELETE FROM proveedor WHERE id_proveedor = ?', [id]);
+    await pool.query('DELETE FROM proveedores WHERE id_proveedor = ?', [req.params.id]);
     res.json({ message: 'Proveedor eliminado' });
   } catch (err) { next(err); }
 }

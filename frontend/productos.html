@@ -28,14 +28,18 @@
             <h3 style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">Registrar Nuevo Artículo</h3>
             <form id="form-producto" style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
                 <div>
-                    <label style="display:block; margin-bottom:0.3rem;">Descripción del Producto *</label>
-                    <input type="text" id="descripcion" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                    <label style="display:block; margin-bottom:0.3rem;">Nombre del Producto *</label>
+                    <input type="text" id="nombre" required placeholder="Ej: Harina de Trigo" style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
                 </div>
                 <div>
                     <label style="display:block; margin-bottom:0.3rem;">Precio de Venta ($) *</label>
-                    <input type="number" id="precio" required min="0" style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                    <input type="number" id="precio" required min="0" placeholder="Ej: 4500" style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
                 </div>
-                <div style="grid-column: span 3; margin-top: 1rem;">
+                <div style="grid-column: span 2;">
+                    <label style="display:block; margin-bottom:0.3rem;">Descripción (opcional)</label>
+                    <input type="text" id="descripcion" placeholder="Ej: Harina premium para panadería" style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div style="grid-column: span 2; margin-top: 0.5rem;">
                     <button type="submit" style="background: #ff9f43; color: black; font-weight: bold; padding: 0.7rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">
                         Guardar en Catálogo
                     </button>
@@ -48,16 +52,18 @@
                 <thead>
                     <tr style="border-bottom: 2px solid #2c2c35; color: #8a8a98;">
                         <th style="padding: 0.8rem;">Código</th>
+                        <th style="padding: 0.8rem;">Nombre</th>
                         <th style="padding: 0.8rem;">Descripción</th>
                         <th style="padding: 0.8rem;">Precio Unitario</th>
+                        <th style="padding: 0.8rem; text-align:center;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-productos-body">
-                    </tbody>
+                <tbody id="tabla-productos-body"></tbody>
             </table>
         </section>
     </div>
+
     <script src="js/api.js"></script>
-<script src="js/productos.js"></script>
+    <script src="js/productos.js"></script>
 </body>
 </html>

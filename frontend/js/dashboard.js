@@ -1,39 +1,56 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 1. Cargar métricas en paralelo llamando a la API centralizada
-        const [proveedores, productos, almacenes, lotes] = await Promise.all([
-            API.getProveedores(),
-            API.getProductos(),
-            API.getAlmacenes(),
-            API.getLotes()
+        // 1. Cargar métricas en paralelo
+        const [resP, resProd, resA, resL] = await Promise.all([
+            fetch('http://localhost:3000/api/proveedores'),
+            fetch('http://localhost:3000/api/productos'),
+            fetch('http://localhost:3000/api/almacenes'),
+            fetch('http://localhost:3000/api/lotes')
         ]);
 
-        // 2. Inyectar las cantidades en el HTML (asumiendo que la API retorna un Array)
-        document.getElementById('metric-proveedores').textContent = proveedores.length || 0;
-        document.getElementById('metric-productos').textContent = productos.length || 0;
-        document.getElementById('metric-almacenes').textContent = almacenes.length || 0;
-        document.getElementById('metric-lotes').textContent = lotes.length || 0;
+        const [proveedores, productos, almacenes, lotes] = await Promise.all([
+            resP.json(), resProd.json(), resA.json(), resL.json()
+        ]);
 
-        // 3. Cargar alertas de vencimiento (Próximos 30 días)
-        const proximosVencer = await API.getProximosVencer(30);
+        // 2. Inyectar cantidades — la API devuelve { total, data }
+        document.getElementById('metric-proveedores').textContent = proveedores.total || 0;
+        document.getElementById('metric-productos').textContent   = productos.total  || 0;
+        document.getElementById('metric-almacenes').textContent   = almacenes.total  || 0;
+        document.getElementById('metric-lotes').textContent       = lotes.total      || 0;
+
+        // 3. Calcular alertas de vencimiento desde los lotes cargados
+        const hoy = new Date();
+        const lotesData = lotes.data || [];
+        const proximosVencer = lotesData.filter(l => {
+            if (!l.fecha_vencimiento) return false;
+            const fVence = new Date(l.fecha_vencimiento);
+            const diff = Math.ceil((fVence - hoy) / (1000 * 60 * 60 * 24));
+            return diff >= 0 && diff <= 30;
+        });
+
         const contenedorAlertas = document.getElementById('contenedor-alertas');
         const alertasSeccion = document.getElementById('alertas-seccion');
 
-        if (proximosVencer && proximosVencer.length > 0) {
-            alertasSeccion.style.display = 'block'; // Mostrar la sección si hay alertas
-            contenedorAlertas.innerHTML = ''; // Limpiar previo
+        if (proximosVencer.length > 0) {
+            if (alertasSeccion) alertasSeccion.style.display = 'block';
+            contenedorAlertas.innerHTML = '';
 
             proximosVencer.forEach(lote => {
+                const fVence = new Date(lote.fecha_vencimiento);
+                const diff = Math.ceil((fVence - hoy) / (1000 * 60 * 60 * 24));
                 const alerta = document.createElement('div');
                 alerta.className = 'alert-box';
-                // Mostramos el nombre del producto y cuántos días le quedan calculados por MySQL
                 alerta.innerHTML = `
-                    <strong>Lote #${lote.id_lote}</strong> - Producto: <em>${lote.nombre_producto}</em> 
-                    está a solo <strong>${lote.dias_para_vencer} días</strong> de vencer. 
-                    (Vence el: ${new Date(lote.fecha_vencimiento).toLocaleDateString()})
+                    <strong>Lote #${lote.id_lote}</strong> - Producto: <em>${lote.nombre_producto}</em>
+                    está a solo <strong>${diff} días</strong> de vencer.
+                    (Vence el: ${fVence.toLocaleDateString('es-CO')})
                 `;
                 contenedorAlertas.appendChild(alerta);
             });
+        } else {
+            if (contenedorAlertas) {
+                contenedorAlertas.innerHTML = `<p style="color:#8a8a98; margin:0;">✅ Todos los lotes tienen un margen seguro mayor a 30 días.</p>`;
+            }
         }
 
     } catch (error) {
