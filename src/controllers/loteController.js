@@ -44,18 +44,18 @@ async function getById(req, res, next) {
   } catch (err) { next(err); }
 }
 
-// POST /api/lotes
+// POST /api/lotes — usa el Procedimiento Almacenado
 async function create(req, res, next) {
   try {
-    const { fecha_ingreso, fecha_vencimiento, id_producto, id_almacen, cantidad } = req.body;
-    if (!id_producto || !id_almacen || !cantidad) {
-      return res.status(400).json({ error: 'id_producto, id_almacen y cantidad son obligatorios' });
+    const { fecha_vencimiento, id_producto, id_almacen, cantidad } = req.body;
+    if (!id_producto || !id_almacen || !cantidad || !fecha_vencimiento) {
+      return res.status(400).json({ error: 'id_producto, id_almacen, cantidad y fecha_vencimiento son obligatorios' });
     }
-    const [result] = await pool.query(
-      'INSERT INTO lotes (fecha_ingreso, fecha_vencimiento, id_producto, id_almacen, cantidad) VALUES (?, ?, ?, ?, ?)',
-      [fecha_ingreso || new Date().toISOString().split('T')[0], fecha_vencimiento || null, id_producto, id_almacen, cantidad]
+    await pool.query(
+      'CALL registrar_lote_seguro(?, ?, ?, ?)',
+      [id_producto, id_almacen, cantidad, fecha_vencimiento]
     );
-    res.status(201).json({ message: 'Lote creado', id_lote: result.insertId });
+    res.status(201).json({ message: 'Lote creado con éxito mediante Procedimiento Almacenado' });
   } catch (err) { next(err); }
 }
 
@@ -85,4 +85,19 @@ async function remove(req, res, next) {
   } catch (err) { next(err); }
 }
 
-module.exports = { getAll, getById, create, update, remove };
+// GET /api/lotes/stock-total/:id_producto — usa la Función
+async function getStockTotal(req, res, next) {
+  try {
+    const { id_producto } = req.params;
+    const [[result]] = await pool.query(
+      'SELECT obtener_stock_total(?) AS stock_total',
+      [id_producto]
+    );
+    res.json({
+      id_producto: parseInt(id_producto),
+      stock_total_disponible: result.stock_total
+    });
+  } catch (err) { next(err); }
+}
+
+module.exports = { getAll, getById, create, update, remove, getStockTotal };

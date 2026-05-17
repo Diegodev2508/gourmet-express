@@ -119,6 +119,41 @@ END//
 DELIMITER ;
 
 -- ============================================================
+-- FUNCIÓN: Obtener stock total de un producto
+-- Uso: SELECT obtener_stock_total(1);
+-- ============================================================
+
+DELIMITER //
+CREATE FUNCTION obtener_stock_total(p_id_producto INT)
+RETURNS INT DETERMINISTIC
+BEGIN
+    DECLARE total INT;
+    SELECT COALESCE(SUM(cantidad), 0) INTO total
+    FROM lotes
+    WHERE id_producto = p_id_producto;
+    RETURN total;
+END//
+DELIMITER ;
+
+-- ============================================================
+-- PROCEDIMIENTO: Registrar lote de forma segura
+-- Uso: CALL registrar_lote_seguro(1, 1, 100, '2026-12-31');
+-- ============================================================
+
+DELIMITER //
+CREATE PROCEDURE registrar_lote_seguro(
+    IN p_id_producto      INT,
+    IN p_id_almacen       INT,
+    IN p_cantidad         INT,
+    IN p_fecha_vencimiento DATE
+)
+BEGIN
+    INSERT INTO lotes (fecha_ingreso, fecha_vencimiento, id_producto, id_almacen, cantidad)
+    VALUES (CURDATE(), p_fecha_vencimiento, p_id_producto, p_id_almacen, p_cantidad);
+END//
+DELIMITER ;
+
+-- ============================================================
 -- DATOS DE PRUEBA
 -- ============================================================
 
@@ -135,10 +170,10 @@ INSERT INTO productos (nombre, descripcion, precio, id_proveedor) VALUES
 ('Azúcar Refinada',         'Azúcar blanca 50kg',                  3200.00, 1);
 
 INSERT INTO almacenes (nombre, ubicacion, capacidad_m3) VALUES
-('Sede Central - El Poblado',         'Carrera 43A #9-12',      500.00),
-('Planta de Producción - Laureles',   'Avenida Nutibara #74-25',800.00),
-('Centro de Distribución - Envigado', 'Calle 38 Sur #41-10',    650.00),
-('Centro Logístico - Itagüí',         'Calle 80 #45-10',        400.00);
+('Sede Central - El Poblado',         'Carrera 43A #9-12',       500.00),
+('Planta de Producción - Laureles',   'Avenida Nutibara #74-25', 800.00),
+('Centro de Distribución - Envigado', 'Calle 38 Sur #41-10',     650.00),
+('Centro Logístico - Itagüí',         'Calle 80 #45-10',         400.00);
 
 INSERT INTO lotes (id_producto, id_almacen, cantidad, fecha_ingreso, fecha_vencimiento) VALUES
 (1, 1, 120, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 90 DAY)),
