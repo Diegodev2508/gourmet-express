@@ -1,13 +1,4 @@
--- ============================================================
--- GOURMET EXPRESS — Archivo de Pruebas para Clase
--- Ejecutar en MySQL Workbench con la BD gourmet_express activa
--- ============================================================
-
 USE gourmet_express;
-
--- ============================================================
--- 1. CRUD COMPLETO — PROVEEDORES
--- ============================================================
 
 -- READ: Ver todos los proveedores
 SELECT * FROM proveedores;
@@ -17,11 +8,11 @@ SELECT * FROM proveedores WHERE id_proveedor = 1;
 
 -- INSERT: Crear nuevo proveedor
 INSERT INTO proveedores (nombre, contacto, telefono, ciudad, direccion)
-VALUES ('Panadería La Espiga', 'María Torres', '3204567890', 'Medellín', 'Calle 50 #30-10');
+VALUES ('Panadería La Espiga', 'Maria Torres', '3204567890', 'Medellin', 'Calle 50 #30-10');
 
 -- UPDATE: Actualizar proveedor
 UPDATE proveedores
-SET telefono = '3001112233', ciudad = 'Bogotá'
+SET telefono = '3001112233', ciudad = 'Bogota'
 WHERE id_proveedor = 1;
 
 -- DELETE: Eliminar proveedor (activa el trigger de auditoría)

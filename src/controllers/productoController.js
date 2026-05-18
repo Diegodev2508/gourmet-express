@@ -13,6 +13,7 @@ async function getAll(req, res, next) {
       LEFT JOIN proveedores pr USING (id_proveedor)
       ORDER BY p.nombre
     `);
+
     res.json({ total: rows.length, data: rows });
   } catch (err) { next(err); }
 }
@@ -21,11 +22,14 @@ async function getAll(req, res, next) {
 async function getById(req, res, next) {
   try {
     const [[row]] = await pool.query(`
-      SELECT p.*, pr.nombre AS nombre_proveedor
-      FROM productos p
-      LEFT JOIN proveedores pr USING (id_proveedor)
-      WHERE p.id_producto = ?
-    `, [req.params.id]);
+
+        SELECT p.*, pr.nombre AS nombre_proveedor
+        FROM productos p
+        LEFT JOIN proveedores pr USING (id_proveedor)
+        WHERE p.id_producto = ?`,
+
+        [req.params.id]);
+
     if (!row) return res.status(404).json({ error: 'Producto no encontrado' });
     res.json(row);
   } catch (err) { next(err); }
@@ -39,7 +43,9 @@ async function create(req, res, next) {
       return res.status(400).json({ error: 'nombre y precio son obligatorios' });
     }
     const [result] = await pool.query(
+
       'INSERT INTO productos (nombre, descripcion, precio, id_proveedor) VALUES (?, ?, ?, ?)',
+
       [nombre, descripcion || null, precio, id_proveedor || null]
     );
     res.status(201).json({ message: 'Producto creado', id_producto: result.insertId });
@@ -51,12 +57,14 @@ async function update(req, res, next) {
   try {
     const { nombre, descripcion, precio, id_proveedor } = req.body;
     await pool.query(
+
       `UPDATE productos SET
         nombre       = COALESCE(?, nombre),
         descripcion  = COALESCE(?, descripcion),
         precio       = COALESCE(?, precio),
         id_proveedor = COALESCE(?, id_proveedor)
        WHERE id_producto = ?`,
+
       [nombre, descripcion, precio, id_proveedor, req.params.id]
     );
     res.json({ message: 'Producto actualizado' });

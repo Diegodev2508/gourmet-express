@@ -1,5 +1,9 @@
 // src/app.js — Punto de entrada principal
-require('dotenv').config();
+const path = require('path');
+
+require('dotenv').config({
+  path: path.resolve(__dirname, '../.env')
+});
 const express      = require('express');
 const cors         = require('cors');
 const { testConnection } = require('./config/db');
@@ -25,7 +29,6 @@ app.use('/api/almacenes',   almacenRoutes);
 app.use('/api/lotes',       loteRoutes);
 
 // Servir archivos estáticos del frontend
-const path = require('path');
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Ruta raíz → sirve index.html
@@ -51,10 +54,10 @@ async function start() {
   try {
     await testConnection(); // Si falla, entra al catch
     app.listen(PORT, () => {
-      console.log(`🚀 Gourmet Express API corriendo en http://localhost:${PORT}`);
+      console.log(`Gourmet Express API corriendo en http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('❌ No se pudo conectar a la BD. Servidor no iniciado.', error);
+    console.error('No se pudo conectar a la BD. Servidor no iniciado.', error);
     process.exit(1); // Para el proceso limpiamente
   }
 }

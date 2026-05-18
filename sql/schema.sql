@@ -1,15 +1,8 @@
--- ============================================================
--- GOURMET EXPRESS — Script completo de base de datos
--- Ejecutar en MySQL Workbench como usuario root
--- ============================================================
-
 DROP DATABASE IF EXISTS gourmet_express;
 CREATE DATABASE gourmet_express CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE gourmet_express;
 
--- ============================================================
--- TABLAS
--- ============================================================
+-- Tablas
 
 CREATE TABLE proveedores (
     id_proveedor   INT          NOT NULL AUTO_INCREMENT,
@@ -69,13 +62,11 @@ CREATE TABLE auditoria_proveedores (
     fecha        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
--- TRIGGERS
--- ============================================================
+-- Triggers
 
 DELIMITER //
 
--- Trigger 1: Asignar fecha_ingreso automáticamente si no se envía
+-- Trigger 1: Asignar fecha_ingreso automaticamente si no se envia
 CREATE TRIGGER before_lote_insert
 BEFORE INSERT ON lotes
 FOR EACH ROW
@@ -107,7 +98,7 @@ BEGIN
     END IF;
 END//
 
--- Trigger 4: Auditoría — registrar proveedores eliminados
+-- Trigger 4: Auditoria — registrar proveedores eliminados
 CREATE TRIGGER after_proveedor_delete
 AFTER DELETE ON proveedores
 FOR EACH ROW
@@ -118,10 +109,7 @@ END//
 
 DELIMITER ;
 
--- ============================================================
--- FUNCIÓN: Obtener stock total de un producto
--- Uso: SELECT obtener_stock_total(1);
--- ============================================================
+-- FUNCION: Obtener stock total de un producto
 
 DELIMITER //
 CREATE FUNCTION obtener_stock_total(p_id_producto INT)
@@ -135,10 +123,7 @@ BEGIN
 END//
 DELIMITER ;
 
--- ============================================================
 -- PROCEDIMIENTO: Registrar lote de forma segura
--- Uso: CALL registrar_lote_seguro(1, 1, 100, '2026-12-31');
--- ============================================================
 
 DELIMITER //
 CREATE PROCEDURE registrar_lote_seguro(
@@ -153,9 +138,7 @@ BEGIN
 END//
 DELIMITER ;
 
--- ============================================================
--- DATOS DE PRUEBA
--- ============================================================
+-- Datos de prueba
 
 INSERT INTO proveedores (nombre, contacto, telefono, ciudad, direccion) VALUES
 ('Distribuidores Gourmet Co.', 'Carlos Mendoza',  '3001234567', 'Medellín', 'Cra 43A #1-50'),
@@ -181,15 +164,3 @@ INSERT INTO lotes (id_producto, id_almacen, cantidad, fecha_ingreso, fecha_venci
 (3, 2,  80, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 60 DAY)),
 (4, 3,  30, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 180 DAY)),
 (5, 4, 200, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 365 DAY));
-
--- ============================================================
--- VERIFICACIÓN FINAL
--- ============================================================
-
-SELECT 'proveedores' AS tabla, COUNT(*) AS registros FROM proveedores
-UNION ALL
-SELECT 'productos',  COUNT(*) FROM productos
-UNION ALL
-SELECT 'almacenes',  COUNT(*) FROM almacenes
-UNION ALL
-SELECT 'lotes',      COUNT(*) FROM lotes;
