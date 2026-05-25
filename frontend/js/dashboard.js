@@ -61,18 +61,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // ── GRÁFICA: STOCK POR PRODUCTO ───────────────────────
-        const stockPorProducto = {};
-        lotesData.forEach(l => {
-            stockPorProducto[l.nombre_producto] = (stockPorProducto[l.nombre_producto] || 0) + l.cantidad;
-        });
+        const stockPorProducto = await Promise.all(productosData.map(async (producto) => {
+            const res = await fetch(`http://localhost:3000/api/lotes/stock-total/${producto.id_producto}`);
+            if (!res.ok) {
+                throw new Error(`Error consultando stock total del producto ${producto.id_producto}`);
+            }
+
+            const data = await res.json();
+            return {
+                nombre: producto.nombre,
+                total: Number(data.stock_total_disponible || 0)
+            };
+        }));
 
         new Chart(document.getElementById('grafica-stock'), {
             type: 'bar',
             data: {
-                labels: Object.keys(stockPorProducto),
+                labels: stockPorProducto.map(item => item.nombre),
                 datasets: [{
                     label: 'Unidades',
-                    data: Object.values(stockPorProducto),
+                    data: stockPorProducto.map(item => item.total),
                     backgroundColor: ['#ff9f43','#4ecdc4','#a29bfe','#2ecc71','#ff4d4d','#74b9ff'],
                     borderRadius: 6,
                     borderSkipped: false

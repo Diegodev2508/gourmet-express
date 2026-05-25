@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const contenedorTelefonos = document.getElementById('contenedor-telefonos');
-    const btnAgregarTelefono  = document.getElementById('btn-agregar-telefono');
+    // const btnAgregarTelefono  = document.getElementById('btn-agregar-telefono');
     const btnCancelar         = document.getElementById('btn-cancelar');
     const formTitulo          = document.getElementById('form-titulo');
     const tablaBody           = document.getElementById('tabla-proveedores-body');
@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ── TELÉFONOS DINÁMICOS ───────────────────────────────────
+    /*
     btnAgregarTelefono.addEventListener('click', () => {
         const nuevoInput = document.createElement('div');
         nuevoInput.style.display = 'flex';
@@ -54,6 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
         contenedorTelefonos.appendChild(nuevoInput);
         nuevoInput.querySelector('.btn-remover-tel').addEventListener('click', () => nuevoInput.remove());
     });
+
+     */
 
     // ── CARGAR PROVEEDORES ────────────────────────────────────
     async function cargarProveedores() {
