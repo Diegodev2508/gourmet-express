@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
     <div class="sidebar">
         <h2>Gourmet Express</h2>
         <nav>
@@ -29,22 +28,26 @@
             <h3 style="color: #ff4d4d; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
                 ⚠️ Alerta de Calidad: Próximos a Vencer (Menos de 30 días)
             </h3>
-            <div id="contenedor-alertas">
-                </div>
+            <div id="contenedor-alertas"></div>
         </section>
 
         <section class="card" style="margin-bottom: 2.5rem; background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
-            <h3 style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">Registrar Entrada de Nuevo Lote</h3>
+            <!-- ① título dinámico -->
+            <h3 id="form-titulo" style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">
+                Registrar Entrada de Nuevo Lote
+            </h3>
             <form id="form-lote" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+
+                <!-- ② input hidden para editar -->
+                <input type="hidden" id="id-lote-editar">
+
                 <div>
                     <label style="display:block; margin-bottom:0.3rem;">Producto *</label>
-                    <select id="select-producto" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
-                        </select>
+                    <select id="select-producto" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;"></select>
                 </div>
                 <div>
                     <label style="display:block; margin-bottom:0.3rem;">Almacén / Sede *</label>
-                    <select id="select-almacen" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
-                        </select>
+                    <select id="select-almacen" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;"></select>
                 </div>
                 <div>
                     <label style="display:block; margin-bottom:0.3rem;">Cantidad Inicial *</label>
@@ -54,9 +57,13 @@
                     <label style="display:block; margin-bottom:0.3rem;">Fecha de Vencimiento *</label>
                     <input type="date" id="fecha-vencimiento" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
                 </div>
-                <div style="grid-column: span 4; margin-top: 0.5rem;">
-                    <button type="submit" style="background: #ff9f43; color: black; font-weight: bold; padding: 0.7rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">
+                <div style="grid-column: span 4; margin-top: 0.5rem; display:flex; gap:1rem;">
+                    <button type="submit" style="background:#ff9f43; color:black; font-weight:bold; padding:0.7rem 1.5rem; border:none; border-radius:4px; cursor:pointer;">
                         Ingresar Lote al Sistema
+                    </button>
+                    <!-- ③ botón cancelar -->
+                    <button type="button" id="btn-cancelar" style="display:none; background:transparent; color:#8a8a98; border:1px solid #8a8a98; padding:0.7rem 1.5rem; border-radius:4px; cursor:pointer;">
+                        Cancelar
                     </button>
                 </div>
             </form>
@@ -73,10 +80,11 @@
                         <th style="padding: 0.8rem;">Stock Actual</th>
                         <th style="padding: 0.8rem;">Vencimiento</th>
                         <th style="padding: 0.8rem;">Estado</th>
+                        <!-- ④ columna acciones -->
+                        <th style="padding: 0.8rem; text-align:center;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-lotes-body">
-                    </tbody>
+                <tbody id="tabla-lotes-body"></tbody>
             </table>
         </section>
     </div>

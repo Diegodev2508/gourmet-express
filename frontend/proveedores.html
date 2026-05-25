@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-
     <div class="sidebar">
         <h2>Gourmet Express</h2>
         <nav>
@@ -26,8 +25,15 @@
         </header>
 
         <section class="card" style="margin-bottom: 2.5rem; background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
-            <h3 style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">Core de Metodología: Registrar Nuevo Proveedor</h3>
+            <!-- ① título dinámico -->
+            <h3 id="form-titulo" style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">
+                Registrar Nuevo Proveedor
+            </h3>
             <form id="form-proveedor" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+                <!-- ② input hidden -->
+                <input type="hidden" id="id-proveedor-editar">
+
                 <div>
                     <label style="display:block; margin-bottom:0.3rem;">Nombre del Proveedor *</label>
                     <input type="text" id="nombre" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
@@ -40,7 +46,6 @@
                     <label style="display:block; margin-bottom:0.3rem;">Dirección (Calle / Avenida) *</label>
                     <input type="text" id="calle" required style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
                 </div>
-                
                 <div style="grid-column: span 2;">
                     <label style="display:block; margin-bottom:0.3rem;">Teléfonos de Contacto *</label>
                     <div id="contenedor-telefonos" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.5rem;">
@@ -50,10 +55,13 @@
                         ➕ Añadir otro teléfono
                     </button>
                 </div>
-
-                <div style="grid-column: span 2; margin-top: 1rem;">
-                    <button type="submit" style="background: #ff9f43; color: black; font-weight: bold; padding: 0.7rem 1.5rem; border: none; border-radius: 4px; cursor: pointer;">
+                <div style="grid-column: span 2; margin-top: 1rem; display:flex; gap:1rem;">
+                    <button type="submit" style="background:#ff9f43; color:black; font-weight:bold; padding:0.7rem 1.5rem; border:none; border-radius:4px; cursor:pointer;">
                         Guardar Proveedor
+                    </button>
+                    <!-- ③ botón cancelar -->
+                    <button type="button" id="btn-cancelar" style="display:none; background:transparent; color:#8a8a98; border:1px solid #8a8a98; padding:0.7rem 1.5rem; border-radius:4px; cursor:pointer;">
+                        Cancelar
                     </button>
                 </div>
             </form>
@@ -68,11 +76,10 @@
                         <th style="padding: 0.8rem;">Proveedor</th>
                         <th style="padding: 0.8rem;">Ubicación (Ciudad, Calle)</th>
                         <th style="padding: 0.8rem;">Teléfonos</th>
-                        <th style="padding: 0.8rem; text-align: center;">Acciones</th>
+                        <th style="padding: 0.8rem; text-align:center;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-proveedores-body">
-                    </tbody>
+                <tbody id="tabla-proveedores-body"></tbody>
             </table>
         </section>
     </div>

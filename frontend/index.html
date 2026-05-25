@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gourmet Express - Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-
     <div class="sidebar">
         <h2>Gourmet Express</h2>
         <nav>
@@ -20,34 +20,84 @@
     </div>
 
     <div class="main-content">
-        <header style="margin-bottom: 2rem;">
-            <h1>Panel de Control</h1>
-            <p style="color: var(--text-secondary);">Estado general de la cadena de suministro</p>
+
+        <!-- HEADER -->
+        <header style="margin-bottom: 2rem; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h1 style="font-size:2rem; margin:0;">Panel de Control</h1>
+                <p style="color:#8a8a98; margin:0;" id="fecha-actual"></p>
+            </div>
+            <div style="background:#1e1e24; padding:0.6rem 1.2rem; border-radius:8px; border:1px solid #2c2c35;">
+                <span style="color:#2ecc71; font-size:0.85rem;">● Sistema Activo</span>
+            </div>
         </header>
 
-        <section id="alertas-seccion" style="display: none;">
-            <h2 style="color: var(--danger-color); margin-bottom: 1rem;">⚠️ Alertas de Vencimiento Crítico (Próximos 30 días)</h2>
-            <div id="contenedor-alertas"></div>
+        <!-- ALERTAS -->
+        <section id="alertas-seccion" style="display:none; margin-bottom:2rem;">
+            <div style="background:#2a1b1b; border:1px solid #ff4d4d; border-radius:8px; padding:1.2rem;">
+                <h3 style="color:#ff4d4d; margin:0 0 0.8rem 0;">⚠️ Alertas de Vencimiento Crítico (Próximos 30 días)</h3>
+                <div id="contenedor-alertas"></div>
+            </div>
         </section>
 
-        <section class="metrics-grid">
-            <div class="card">
-                <h3>Total Proveedores</h3>
-                <div class="value" id="metric-proveedores">-</div>
+        <!-- MÉTRICAS -->
+        <section style="display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; margin-bottom:2rem;">
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem; border-left:4px solid #ff9f43; position:relative; overflow:hidden;">
+                <div style="position:absolute; right:1rem; top:1rem; font-size:2rem; opacity:0.15;">🚚</div>
+                <p style="color:#8a8a98; margin:0 0 0.5rem 0; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Proveedores</p>
+                <div id="metric-proveedores" style="font-size:2.5rem; font-weight:bold; color:#ff9f43;">-</div>
+                <p style="color:#8a8a98; margin:0.3rem 0 0 0; font-size:0.8rem;">registrados</p>
             </div>
-            <div class="card">
-                <h3>Productos en Catálogo</h3>
-                <div class="value" id="metric-productos">-</div>
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem; border-left:4px solid #4ecdc4; position:relative; overflow:hidden;">
+                <div style="position:absolute; right:1rem; top:1rem; font-size:2rem; opacity:0.15;">📦</div>
+                <p style="color:#8a8a98; margin:0 0 0.5rem 0; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Productos</p>
+                <div id="metric-productos" style="font-size:2.5rem; font-weight:bold; color:#4ecdc4;">-</div>
+                <p style="color:#8a8a98; margin:0.3rem 0 0 0; font-size:0.8rem;">en catálogo</p>
             </div>
-            <div class="card">
-                <h3>Almacenes Registrados</h3>
-                <div class="value" id="metric-almacenes">-</div>
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem; border-left:4px solid #a29bfe; position:relative; overflow:hidden;">
+                <div style="position:absolute; right:1rem; top:1rem; font-size:2rem; opacity:0.15;">🏢</div>
+                <p style="color:#8a8a98; margin:0 0 0.5rem 0; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Almacenes</p>
+                <div id="metric-almacenes" style="font-size:2.5rem; font-weight:bold; color:#a29bfe;">-</div>
+                <p style="color:#8a8a98; margin:0.3rem 0 0 0; font-size:0.8rem;">activos</p>
             </div>
-            <div class="card">
-                <h3>Lotes Activos</h3>
-                <div class="value" id="metric-lotes">-</div>
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem; border-left:4px solid #2ecc71; position:relative; overflow:hidden;">
+                <div style="position:absolute; right:1rem; top:1rem; font-size:2rem; opacity:0.15;">🔢</div>
+                <p style="color:#8a8a98; margin:0 0 0.5rem 0; font-size:0.85rem; text-transform:uppercase; letter-spacing:1px;">Lotes Activos</p>
+                <div id="metric-lotes" style="font-size:2.5rem; font-weight:bold; color:#2ecc71;">-</div>
+                <p style="color:#8a8a98; margin:0.3rem 0 0 0; font-size:0.8rem;">en inventario</p>
             </div>
         </section>
+
+        <!-- GRÁFICAS -->
+        <section style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; margin-bottom:2rem;">
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem;">
+                <h3 style="color:white; margin:0 0 1rem 0; font-size:1rem;">📊 Stock por Producto</h3>
+                <canvas id="grafica-stock" height="220"></canvas>
+            </div>
+            <div style="background:#1e1e24; border-radius:10px; padding:1.5rem;">
+                <h3 style="color:white; margin:0 0 1rem 0; font-size:1rem;">🏢 Lotes por Almacén</h3>
+                <canvas id="grafica-almacenes" height="220"></canvas>
+            </div>
+        </section>
+
+        <!-- TABLA LOTES CRÍTICOS -->
+        <section style="background:#1e1e24; border-radius:10px; padding:1.5rem;">
+            <h3 style="color:white; margin:0 0 1rem 0; font-size:1rem;">📋 Estado del Inventario</h3>
+            <table style="width:100%; border-collapse:collapse; text-align:left;">
+                <thead>
+                    <tr style="border-bottom:2px solid #2c2c35; color:#8a8a98; font-size:0.85rem; text-transform:uppercase;">
+                        <th style="padding:0.8rem;">Lote</th>
+                        <th style="padding:0.8rem;">Producto</th>
+                        <th style="padding:0.8rem;">Almacén</th>
+                        <th style="padding:0.8rem;">Stock</th>
+                        <th style="padding:0.8rem;">Vencimiento</th>
+                        <th style="padding:0.8rem;">Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-inventario"></tbody>
+            </table>
+        </section>
+
     </div>
 
     <script src="js/api.js"></script>

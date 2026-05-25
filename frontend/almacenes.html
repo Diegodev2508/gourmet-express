@@ -24,21 +24,56 @@
             <p style="color: #8a8a98;">Puntos de distribución física de la cadena gastronómica</p>
         </header>
 
+        <!-- FORMULARIO CREAR / EDITAR -->
+        <section class="card" style="margin-bottom: 2.5rem; background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
+            <h3 id="form-titulo" style="color: #ff9f43; margin-bottom: 1rem; font-size: 1.2rem;">Registrar Nuevo Almacén</h3>
+            <form id="form-almacen" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <input type="hidden" id="id-almacen-editar">
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Nombre del Almacén *</label>
+                    <input type="text" id="nombre-almacen" required placeholder="Ej: Sede Central - El Poblado"
+                        style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:0.3rem;">Capacidad m³</label>
+                    <input type="number" id="capacidad-almacen" min="0" placeholder="Ej: 500"
+                        style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div style="grid-column: span 2;">
+                    <label style="display:block; margin-bottom:0.3rem;">Ubicación / Dirección *</label>
+                    <input type="text" id="ubicacion-almacen" required placeholder="Ej: Carrera 43A #9-12"
+                        style="width:100%; padding:0.6rem; background:#2c2c35; border:none; color:white; border-radius:4px;">
+                </div>
+                <div style="grid-column: span 2; display:flex; gap:1rem; margin-top:0.5rem;">
+                    <button type="submit" id="btn-guardar"
+                        style="background:#ff9f43; color:black; font-weight:bold; padding:0.7rem 1.5rem; border:none; border-radius:4px; cursor:pointer;">
+                        Guardar Almacén
+                    </button>
+                    <button type="button" id="btn-cancelar" style="display:none; background:transparent; color:#8a8a98; border:1px solid #8a8a98; padding:0.7rem 1.5rem; border-radius:4px; cursor:pointer;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- TABLA -->
         <section class="card" style="background: #1e1e24; padding: 1.5rem; border-radius: 8px;">
             <table style="width: 100%; border-collapse: collapse; text-align: left;">
                 <thead>
                     <tr style="border-bottom: 2px solid #2c2c35; color: #8a8a98;">
-                        <th style="padding: 0.8rem;">Número Único</th>
+                        <th style="padding: 0.8rem;">ID</th>
                         <th style="padding: 0.8rem;">Nombre de la Sede</th>
                         <th style="padding: 0.8rem;">Dirección Física</th>
+                        <th style="padding: 0.8rem;">Capacidad m³</th>
+                        <th style="padding: 0.8rem; text-align:center;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-almacenes-body">
-                    </tbody>
+                <tbody id="tabla-almacenes-body"></tbody>
             </table>
         </section>
     </div>
+
     <script src="js/api.js"></script>
-<script src="js/almacenes.js"></script>
+    <script src="js/almacenes.js"></script>
 </body>
 </html>
